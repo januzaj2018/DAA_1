@@ -1,6 +1,7 @@
 package org.example.algorithms.util;
 
 public class Metrics {
+    private int arraySize;
     private long comparisons;
     private long allocations;
     private int MaxRecursionDepth;
@@ -8,32 +9,38 @@ public class Metrics {
     private long startTime;
     private long endTime;
 
-    public void start(){
+    public void start() {
         this.startTime = System.nanoTime();
         this.comparisons = 0;
         this.allocations = 0;
         this.MaxRecursionDepth = 0;
         this.currentRecursionDepth = 0;
     }
-    public void stop(){
+
+    public void stop() {
         this.endTime = System.nanoTime();
     }
-    public long getElapsedTime(){
+
+    public long getElapsedTime() {
         return this.endTime - this.startTime;
     }
-    public void trackRecursionStart(){
+
+    public void trackRecursionStart() {
         this.currentRecursionDepth++;
-        if(this.currentRecursionDepth > this.MaxRecursionDepth){
+        if (this.currentRecursionDepth > this.MaxRecursionDepth) {
             this.MaxRecursionDepth = this.currentRecursionDepth;
         }
     }
-    public void trackRecursionEnd(){
+
+    public void trackRecursionEnd() {
         this.currentRecursionDepth--;
     }
-    public void comparisonIncrement(){
+
+    public void comparisonIncrement() {
         this.comparisons++;
     }
-    public void allocationIncrement(){
+
+    public void allocationIncrement() {
         this.allocations++;
     }
 
@@ -44,8 +51,18 @@ public class Metrics {
     public long getAllocations() {
         return allocations;
     }
-
     public int getMaxRecursionDepth() {
         return MaxRecursionDepth;
+    }
+
+    public int getArraySize() {
+        return arraySize;
+    }
+
+    public void setArraySize(int arraySize) {
+        this.arraySize = arraySize;
+    }
+    public int getCurrentRecursionDepth() {
+        return currentRecursionDepth;
     }
 }
