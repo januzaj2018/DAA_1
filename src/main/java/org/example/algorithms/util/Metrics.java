@@ -65,4 +65,16 @@ public class Metrics {
     public int getCurrentRecursionDepth() {
         return currentRecursionDepth;
     }
+
+    public void printMetrics(String testName) {
+        System.out.printf(
+            "%s: size=%d, comparisons=%d, allocations=%d, maxDepth=%d, time=%dns%n",
+            testName,
+            getArraySize(),
+            getComparisons(),
+            getAllocations(),
+            getMaxRecursionDepth(),
+            getElapsedTime()
+        );
+    }
 }
