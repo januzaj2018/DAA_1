@@ -9,7 +9,7 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-public class MergeSortTest {
+public class QuickSortTest {
     private Metrics tracker;
 
     @BeforeEach
@@ -22,7 +22,7 @@ public class MergeSortTest {
         int[] actual = generateArray(100);
         int[] expected = Arrays.copyOf(actual, actual.length);
         Arrays.sort(expected);
-        MergeSort.sort(actual, tracker);
+        QuickSort.sort(actual, tracker);
         assertArrayEquals(expected, actual);
         tracker.printMetrics("Random");
     }
@@ -32,7 +32,7 @@ public class MergeSortTest {
         int[] actual = generateArray(100);
         Arrays.sort(actual);
         int[] expected = Arrays.copyOf(actual, actual.length);
-        MergeSort.sort(actual, tracker);
+        QuickSort.sort(actual, tracker);
         assertArrayEquals(expected, actual);
         tracker.printMetrics("Sorted");
     }
@@ -48,66 +48,29 @@ public class MergeSortTest {
         }
         int[] expected = Arrays.copyOf(actual, actual.length);
         Arrays.sort(expected);
-        MergeSort.sort(actual, tracker);
+        QuickSort.sort(actual, tracker);
         assertArrayEquals(expected, actual);
         tracker.printMetrics("Reverse");
     }
 
     @Test
     void testAdversarial() {
-        int size = 100;
-        int[] actual = generateAdversarialArray(size);
-        int[] expected = new int[size];
-        System.arraycopy(actual, 0, expected, 0, size);
+        int[] actual = new int[100];
+        for (int i = 0; i < actual.length; i++) {
+            actual[i] = i % 10;
+        }
+        int[] expected = Arrays.copyOf(actual, actual.length);
         Arrays.sort(expected);
-        MergeSort.sort(actual, tracker);
+        QuickSort.sort(actual, tracker);
         assertArrayEquals(expected, actual);
         tracker.printMetrics("Adversarial");
-    }
-
-    /**
-     * Generates a worst-case adversarial array for mergesort by
-     * recursively interleaving sorted halves.
-     */
-    private int[] generateAdversarialArray(int size) {
-        if (size <= 1) {
-            return new int[size];
-        }
-        // Start with a sorted array
-        int[] sorted = new int[size];
-        for (int i = 0; i < size; i++) {
-            sorted[i] = i;
-        }
-        // Recursively split and interleave to create the worst-case
-        return interleave(sorted, 0, size - 1);
-    }
-
-    private int[] interleave(int[] array, int low, int high) {
-        if (low == high) {
-            return new int[]{array[low]};
-        }
-        int mid = low + (high - low) / 2;
-        int[] left = interleave(array, low, mid);
-        int[] right = interleave(array, mid + 1, high);
-        int[] result = new int[left.length + right.length];
-        int i = 0, l = 0, r = 0;
-        // Interleave the two sub-arrays
-        while (l < left.length || r < right.length) {
-            if (l < left.length) {
-                result[i++] = left[l++];
-            }
-            if (r < right.length) {
-                result[i++] = right[r++];
-            }
-        }
-        return result;
     }
 
     @Test
     void testEmpty() {
         int[] actual = new int[0];
         int[] expected = new int[0];
-        MergeSort.sort(actual, tracker);
+        QuickSort.sort(actual, tracker);
         assertArrayEquals(expected, actual);
         tracker.printMetrics("Empty");
     }
@@ -116,7 +79,7 @@ public class MergeSortTest {
     void testSingleElement() {
         int[] actual = {42};
         int[] expected = {42};
-        MergeSort.sort(actual, tracker);
+        QuickSort.sort(actual, tracker);
         assertArrayEquals(expected, actual);
         tracker.printMetrics("SingleElement");
     }
@@ -127,7 +90,7 @@ public class MergeSortTest {
         Arrays.fill(actual, 7);
         int[] expected = new int[50];
         Arrays.fill(expected, 7);
-        MergeSort.sort(actual, tracker);
+        QuickSort.sort(actual, tracker);
         assertArrayEquals(expected, actual);
         tracker.printMetrics("AllEqual");
     }
@@ -137,10 +100,13 @@ public class MergeSortTest {
         int[] actual = generateArray(10_000);
         int[] expected = Arrays.copyOf(actual, actual.length);
         Arrays.sort(expected);
-        MergeSort.sort(actual, tracker);
+        QuickSort.sort(actual, tracker);
+        assertArrayEquals(expected, actual);
+        tracker.printMetrics("LargeArray");
     }
+
     private int[] generateArray(int size) {
-        Random rand = new Random();
-        return rand.ints(size, 0, 1000).toArray();
+        Random random = new Random(42); // fixed seed for reproducibility
+        return random.ints(size, 0, 10000).toArray();
     }
 }
