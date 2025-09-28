@@ -62,16 +62,19 @@ Metrics are collected by passing a Metrics object to each algorithm. Recursion d
 
 <img src="plots/mergesort_time_vs_n.png" alt="Time vs n">
 <img src="plots/quicksort_time_vs_n.png" alt="Time vs n">
+<img src="plots/merge_quick_time_vs_n.png" alt="Time vs n">
 <img src="plots/deterministicselect_time_vs_n.png" alt="Time vs n">
 <img src="plots/closestpair_time_vs_n.png" alt="Time vs n">
-
+<img src="plots/all_algorithms_time_vs_n.png" alt="Time vs n">
 
 ### Depth vs n
 
 <img src="plots/mergesort_depth_vs_n.png" alt="Time vs n">
 <img src="plots/quicksort_depth_vs_n.png" alt="Time vs n">
+<img src="plots/merge_quick_depth_vs_n.png" alt="Time vs n">
 <img src="plots/deterministicselect_depth_vs_n.png" alt="Time vs n">
 <img src="plots/closestpair_depth_vs_n.png" alt="Time vs n">
+<img src="plots/all_algorithms_depth_vs_n.png" alt="Time vs n">
 
 
 ## Constant-Factor Effects
