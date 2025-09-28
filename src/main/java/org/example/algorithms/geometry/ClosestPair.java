@@ -18,42 +18,58 @@ public class ClosestPair {
         }
     }
 
+    public static class Result {
+        public final Point p1, p2;
+        public final double distance;
+        public Result(Point p1, Point p2, double distance) {
+            this.p1 = p1;
+            this.p2 = p2;
+            this.distance = distance;
+        }
+    }
+
     private double distance(Point p1, Point p2, Metrics metrics) {
         metrics.comparisonIncrement();
         return Math.hypot(p1.x - p2.x, p1.y - p2.y);
     }
 
-    public double findClosest(Point[] points, Metrics metrics) {
+    public Result findClosest(Point[] points, Metrics metrics) {
         if (points == null || points.length < 2) throw new IllegalArgumentException();
         metrics.setArraySize(points.length);
         metrics.start();
         Point[] pointsByX = points.clone();
         Arrays.sort(pointsByX, Comparator.comparingDouble(p -> p.x));
         metrics.allocationIncrement();
-        double result = closestPairRecursive(pointsByX, 0, pointsByX.length - 1, metrics);
+        Result result = closestPairRecursive(pointsByX, 0, pointsByX.length - 1, metrics);
         metrics.stop();
         return result;
     }
 
-    private double closestPairRecursive(Point[] pts, int left, int right, Metrics metrics) {
+    private Result closestPairRecursive(Point[] pts, int left, int right, Metrics metrics) {
         metrics.trackRecursionStart();
         int n = right - left + 1;
         if (n <= 3) {
             double minDist = Double.POSITIVE_INFINITY;
+            Point best1 = null, best2 = null;
             for (int i = left; i <= right; i++) {
                 for (int j = i + 1; j <= right; j++) {
                     double d = distance(pts[i], pts[j], metrics);
-                    if (d < minDist) minDist = d;
+                    if (d < minDist) {
+                        minDist = d;
+                        best1 = pts[i];
+                        best2 = pts[j];
+                    }
                 }
             }
             metrics.trackRecursionEnd();
-            return minDist;
+            return new Result(best1, best2, minDist);
         }
         int mid = left + (right - left) / 2;
         double midX = pts[mid].x;
-        double dLeft = closestPairRecursive(pts, left, mid, metrics);
-        double dRight = closestPairRecursive(pts, mid + 1, right, metrics);
-        double d = Math.min(dLeft, dRight);
+        Result leftResult = closestPairRecursive(pts, left, mid, metrics);
+        Result rightResult = closestPairRecursive(pts, mid + 1, right, metrics);
+        Result best = leftResult.distance < rightResult.distance ? leftResult : rightResult;
+        double d = best.distance;
         // Build strip
         Point[] strip = new Point[n];
         int stripSize = 0;
@@ -68,10 +84,13 @@ public class ClosestPair {
         for (int i = 0; i < stripSize; i++) {
             for (int j = i + 1; j < stripSize && (strip[j].y - strip[i].y) < d; j++) {
                 double dist = distance(strip[i], strip[j], metrics);
-                if (dist < d) d = dist;
+                if (dist < best.distance) {
+                    best = new Result(strip[i], strip[j], dist);
+                    d = dist;
+                }
             }
         }
         metrics.trackRecursionEnd();
-        return d;
+        return best;
     }
 }
